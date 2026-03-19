@@ -22,10 +22,6 @@ Ollama handles hardware acceleration and serves models to multiple devices simul
 * **To Update:** Re-run the installation script above. It will detect the existing version and update the binary without affecting your downloaded models.
 
 Install models:
-```
-	ollama pull qwen3:32b
-ollama pull qwen3.5:32b
-```
 
 | Capability | Model | Ollama Command | VRAM Usage |
 | --- | --- | --- | --- |
@@ -36,10 +32,6 @@ ollama pull qwen3.5:32b
 | Vision (Omni) | Qwen 3.5 (27B) | ollama pull qwen3.5:27b | ~19.0 GB | "Sweet Spot. Newer ""Omni"" architecture; native vision + faster text response." |
 | Vision (Fast) | Qwen 3.5 (9B) | ollama pull qwen3.5:9b | ~7.5 GB | Speed King. Instant OCR and scans; can run alongside other models. |
 
-Capability,Model,Ollama Command,VRAM Usage,Notes
-General/Text,Qwen 3 (32B),ollama pull qwen3:32b,~20.0 GB,Standard high-quality text-only model.
-Coding/Logic,Qwen 3 Coder (30B),ollama pull qwen3-coder:30b,~18.5 GB,Optimized for software engineering and math.
-Reasoning,Nemotron 3 Nano (30B),ollama pull nemotron-3-nano:30b,~22.0 GB,NVIDIA's official fine-tune for reasoning tasks.
 
 ### Multi-User and Persistence Setup
 
