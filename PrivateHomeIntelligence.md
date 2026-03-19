@@ -67,13 +67,23 @@ Reasoning,Nemotron 3 Nano (30B),ollama pull nemotron-3-nano:30b,~22.0 GB,NVIDIA'
 
 Jan.AI is the client application for family laptops. It provides the interface for text chat, PDF analysis, and web research via the remote Ollama server.
 
-> **Known Limitation — Vision/Images:** Jan's image upload feature is explicitly designed to work only with local models or OpenAI API models. When using a remote Ollama engine, the image button in the chat input will always be grayed out. This is not a bug in your setup — it is a documented Jan limitation. For image and vision tasks, use **Open WebUI** instead (see Section 5).
-
 ### Initial Setup
 
 1. **Install Jan.AI:** Download from [jan.ai](https://jan.ai).
 2. **Link to Remote Server:** In **Settings > Model Providers**, click the **+** button and add an OpenAI-Compatible provider with the URL: `http://resnet.local:11434/v1`.
-3. **Enable PDF File Analysis:** Go to **Settings**, enable **Experimental Mode**, then enable **Retrieval**. You can now upload PDF documents into any chat thread for analysis.
+3. **Enable File Attachments:** Go to **Settings > Attachments** and toggle **Enable Attachments** ON. This allows uploading and indexing documents (PDF, text, etc.) for retrieval in any chat. Max file size is 20MB by default.
+
+### Enabling Vision & Tool Calling for Remote Models
+
+By default Jan doesn't know which remote Ollama models support vision or tool calling — you have to declare it manually. Do this for each Qwen model:
+
+1. Go to **Settings > Model Providers** and select **Resnet.local**
+2. Click the **pencil (edit) icon** next to the model (e.g. `qwen3.5:9b`)
+3. Under **Capabilities**, toggle **Vision** ON and **Tools** ON
+4. Click **Save Changes**
+5. Repeat for each model you want to use with images or MCP tools
+
+Once Vision is enabled on a model, the image upload button in the chat becomes active when that model is selected — Jan will send images directly to resnet for processing on the RTX 3090. No local model download required.
 
 ### MCP & Web Search Configuration
 
@@ -155,31 +165,21 @@ Jan supports **Projects** — workspaces that organise chats and files together.
 
 ### Proactive Mode (v0.7.3+)
 
-**Proactive Mode** allows Jan to "see" your active browser window to provide context without manual uploads. It is available under **Settings > Assistant**. Note: enabling this feature prompts Jan to download its own vision model (Jan-VL). If you do not want any models downloaded to the laptop, leave this off and use Open WebUI for vision tasks instead.
+**Proactive Mode** allows Jan to "see" your active browser window to provide context without manual uploads. It is available under **Settings > Assistant**. Note: enabling this feature prompts Jan to download its own vision model (Jan-VL). Since vision now works via resnet (see Enabling Vision above), leave Proactive Mode off to avoid any local model downloads.
 
 ---
 
-## 4. Vision & Image Tasks: Open WebUI
+## 4. Alternative Client: Enchanted
 
-Because Jan cannot send images to a remote Ollama engine, **Open WebUI** is the recommended client for any task involving photos, screenshots, or documents with images. It connects directly to the Ollama server and supports full vision/multimodal capability with no local model downloads.
+**Enchanted** is a native macOS app built specifically for Ollama. Jan now handles vision via resnet directly (see Section 3), so Enchanted is optional — but it's a good lightweight alternative if you want a simpler interface for quick image tasks or for other family members.
 
-### Setup (run once per laptop)
+### Setup
 
-**Option A — Docker:**
-```bash
-docker run -d -p 3000:3000 \
-  -e OLLAMA_BASE_URL=http://resnet.local:11434 \
-  --name open-webui \
-  ghcr.io/open-webui/open-webui:main
-```
-Then open `http://localhost:3000` in the browser.
-
-**Option B — No install required:**
-```bash
-npx open-webui serve --ollama-url http://resnet.local:11434
-```
-
-Select `qwen3.5:9b` or `qwen3.5:27b` from the model picker. Drag-and-drop image upload works out of the box.
+1. Install **Enchanted** from the Mac App Store (free)
+2. Open Enchanted and go to Settings
+3. Set the Ollama server URL to `http://resnet.local:11434`
+4. Select `qwen3.5:9b` or `qwen3.5:27b` from the model picker
+5. Drag and drop images directly into the chat
 
 ---
 
@@ -193,4 +193,4 @@ Select `qwen3.5:9b` or `qwen3.5:27b` from the model picker. Drag-and-drop image 
 
 ### Vision Tasks
 
-For photos, screenshots, and image analysis, use **Open WebUI** (Section 4) with `qwen3.5:9b` or `qwen3.5:27b`. The GPU on the Linux Desktop does all the processing — nothing runs on the laptop.
+For photos, screenshots, and image analysis, use `qwen3.5:9b` or `qwen3.5:27b` directly in Jan — enable Vision capability for these models first (see Section 3). The GPU on the Linux Desktop does all the processing — nothing runs on the laptop.
