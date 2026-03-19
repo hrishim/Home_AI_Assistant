@@ -42,6 +42,7 @@ Install models:
    Environment="OLLAMA_HOST=0.0.0.0"
    Environment="OLLAMA_NUM_PARALLEL=4"
    Environment="OLLAMA_MAX_LOADED_MODELS=1"
+   Environment="OLLAMA_ORIGINS=*"
    ```
 
 2. **Apply Changes:**
