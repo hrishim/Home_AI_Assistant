@@ -18,6 +18,7 @@ To allow household laptops to connect to the central service, identify and stabi
 Ollama handles hardware acceleration and serves models to multiple devices simultaneously. It runs as a background system service on the Linux desktop.
 
 ### Installation and Updates
+
 * **To Install:** Run `curl -fsSL https://ollama.com/install.sh | sh`
 * **To Update:** Re-run the installation script above. It will detect the existing version and update the binary without affecting your downloaded models.
 
@@ -32,7 +33,6 @@ Install models:
 | Vision (Omni) | Qwen 3.5 (27B) | ollama pull qwen3.5:27b | ~19.0 GB | "Sweet Spot. Newer ""Omni"" architecture; native vision + faster text response." |
 | Vision (Fast) | Qwen 3.5 (9B) | ollama pull qwen3.5:9b | ~7.5 GB | Speed King. Instant OCR and scans; can run alongside other models. |
 
-
 ### Multi-User and Persistence Setup
 
 1. **Service Configuration:** Run `sudo systemctl edit ollama.service` and add these lines:
@@ -44,9 +44,10 @@ Install models:
    Environment="OLLAMA_MAX_LOADED_MODELS=1"
    Environment="OLLAMA_ORIGINS=*"
    ```
+
 **FIXME:** Add information on what the Ollama environment variables do. Explore additional features like Flash Attention
 
-2. **Apply Changes:**
+1. **Apply Changes:**
 
    ```bash
    sudo systemctl daemon-reload
@@ -54,8 +55,21 @@ Install models:
    sudo systemctl restart ollama
    ```
 
-
 ---
+
+Quick check:
+
+```bash
+curl http://resnet.local:11434/api/tags
+```
+
+```bash
+curl http://resnet.local:11434/api/generate -d '{
+  "model": "qwen3.5:9b",
+  "prompt": "Hello",
+  "stream": false
+}'
+```
 
 ## 3. The User Interface: Jan.AI
 
@@ -88,42 +102,45 @@ Go to **Settings > MCP Servers**. First, enable **Allow All MCP Tool Permissions
 Jan on Intel Macs has a bug where it tries to use its own bundled ARM node binary instead of the system one, causing all STDIO MCP servers to silently fail. Two rules apply to every MCP server you add:
 
 **Rule 1 — Always use full paths for commands:**
-- `npx`-based servers → use `/usr/local/bin/npx` instead of `npx`
-- `uvx`-based servers → use `/usr/local/bin/uvx` instead of `uvx`
+* `npx`-based servers → use `/usr/local/bin/npx` instead of `npx`
+* `uvx`-based servers → use `/usr/local/bin/uvx` instead of `uvx`
 
 **Rule 2 — Always fully quit and restart Jan after changes:**
 `Cmd+Q` to quit (not just close the window), then reopen. Toggling alone is not enough.
 
 **One-time setup — fix npm cache permissions (run in Terminal):**
+
 ```bash
 sudo chown -R $(whoami) ~/.npm
 ```
 
 **Install uvx (required for Python-based MCP servers like fetch):**
+
 ```bash
 brew install uv
 ```
+
 Verify with `which uvx` — should return `/usr/local/bin/uvx`.
 
 #### Filesystem MCP
 
 Lets Jan read files from a folder on the laptop.
-- Command: `/usr/local/bin/npx`
-- Args: `-y`, `@modelcontextprotocol/server-filesystem`, `/Users/hrishi/JanDocs`
+* Command: `/usr/local/bin/npx`
+* Args: `-y`, `@modelcontextprotocol/server-filesystem`, `/Users/hrishi/JanDocs`
 
 The third argument is the folder Jan is allowed to access. Change it to any folder you want. The toggle will fail silently if the path doesn't exist.
 
 #### Fetch MCP
 
 Lets Jan fetch and read any URL during a chat. No API key needed.
-- Command: `/usr/local/bin/uvx`
-- Args: `mcp-server-fetch`
+* Command: `/usr/local/bin/uvx`
+* Args: `mcp-server-fetch`
 
 #### Puppeteer MCP
 
 Similar to Fetch but launches a full headless Chrome browser — useful for pages that require JavaScript to load. Heavier than Fetch and downloads Chromium (~170MB) on first run. **Only add this if Fetch can't handle a page you need.** For most web reading tasks, Fetch is sufficient.
-- Command: `/usr/local/bin/npx`
-- Args: `-y`, `@modelcontextprotocol/server-puppeteer`
+* Command: `/usr/local/bin/npx`
+* Args: `-y`, `@modelcontextprotocol/server-puppeteer`
 
 > **Note:** Puppeteer downloads Chromium on first toggle and takes 1–2 minutes to become active. The spinner will run during this time — this is normal.
 
@@ -132,20 +149,21 @@ Similar to Fetch but launches a full headless Chrome browser — useful for page
 Click **+ Add MCP Server** in the top right. Two good options — pick one:
 
 **Option A — Tavily Search** (recommended, 1000 searches/month free)
-- Get a free API key at [app.tavily.com](https://app.tavily.com)
-- Command: `/usr/local/bin/npx`
-- Args: `-y tavily-mcp`
-- Environment variable: `TAVILY_API_KEY` = your key
+* Get a free API key at [app.tavily.com](https://app.tavily.com)
+* Command: `/usr/local/bin/npx`
+* Args: `-y tavily-mcp`
+* Environment variable: `TAVILY_API_KEY` = your key
 
 **Option B — Brave Search** (2000 searches/month free)
-- Get a free API key at [brave.com/search/api](https://brave.com/search/api)
-- Command: `/usr/local/bin/npx`
-- Args: `-y @modelcontextprotocol/server-brave-search`
-- Environment variable: `BRAVE_API_KEY` = your key
+* Get a free API key at [brave.com/search/api](https://brave.com/search/api)
+* Command: `/usr/local/bin/npx`
+* Args: `-y @modelcontextprotocol/server-brave-search`
+* Environment variable: `BRAVE_API_KEY` = your key
 
 #### Jan Browser MCP (Built-in)
 
 Jan ships a built-in "Jan Browser MCP" for browser control. To enable it:
+
 1. Click `Install Extension →` in the MCP Servers page and install the Chrome extension
 2. Set its Command to `/usr/local/bin/npx` (full path fix above)
 3. Fully quit and restart Jan
