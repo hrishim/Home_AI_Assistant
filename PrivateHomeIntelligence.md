@@ -44,6 +44,7 @@ Install models:
    Environment="OLLAMA_MAX_LOADED_MODELS=1"
    Environment="OLLAMA_ORIGINS=*"
    ```
+**FIXME:** Add information on what the Ollama environment variables do. Explore additional features like Flash Attention
 
 2. **Apply Changes:**
 
