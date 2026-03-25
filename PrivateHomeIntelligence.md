@@ -43,6 +43,8 @@ Install models:
    Environment="OLLAMA_NUM_PARALLEL=4"
    Environment="OLLAMA_MAX_LOADED_MODELS=1"
    Environment="OLLAMA_ORIGINS=*"
+   Environment="OLLAMA_FLASH_ATTENTION=1"
+   Environment="OLLAMA_KV_CACHE_TYPE=q4_0"
    ```
 
 **FIXME:** Add information on what the Ollama environment variables do. Explore additional features like Flash Attention
